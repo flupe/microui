@@ -851,6 +851,13 @@ int mu_slider_ex(mu_Context *ctx, mu_Real *value, mu_Real low, mu_Real high,
     v = low + ((mu_Real) (ctx->mouse_pos.x - base.x) / base.w) * (high - low);
     if (step) { v = ((long) ((v + step/2) / step)) * step; }
   }
+
+  /* handle scroll */
+  if (ctx->hover == id && ~opt & MU_OPT_NOSCROLL) {
+    v += ((mu_Real) (ctx->scroll_delta.y)) / ((mu_Real) (2.0 * base.w)) * (high - low);
+    // if (step) { v = ((long) ((v + step/2) / step)) * step; }
+  }
+
   /* clamp and store value, update res */
   *value = v = mu_clamp(v, low, high);
   if (last != v) { res |= MU_RES_CHANGE; }
