@@ -526,6 +526,26 @@ void mu_layout_row(mu_Context *ctx, int items, const int *widths, int height) {
   layout->row_index = 0;
 }
 
+// equally sized column layout
+void mu_layout_irow(mu_Context *ctx, int items, int height) {
+  mu_Layout *layout = &ctx->layout_stack.items[ctx->layout_stack.idx - 1];
+  layout->items = items;
+
+  int offset = -1;
+  int step = layout->body.w / items;
+
+  expect(items <= MU_MAX_WIDTHS);
+
+  for (unsigned int i = items; i--;) {
+    layout->widths[i] = offset;
+    offset -= step;
+  }
+
+  layout->position = mu_vec2(layout->indent, layout->next_row);
+  layout->size.y = height;
+  layout->row_index = 0;
+}
+
 
 void mu_layout_width(mu_Context *ctx, int width) {
   get_layout(ctx)->size.x = width;
